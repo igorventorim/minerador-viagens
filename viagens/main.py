@@ -65,9 +65,12 @@ def write_df(parameters, time_elapsed):
 
 def send_mail(subject, body):
     load_dotenv()
-    server = smtplib.SMTP_SSL(os.getenv('SERVIDOR_EMAIL'), 465)
+#    server = smtplib.SMTP_SSL(os.getenv('SERVIDOR_EMAIL'), 465)
+    context = ssl.create_default_context()
+    server = smtplib.SMTP(os.getenv('SERVIDOR_EMAIL'), 587)
     server.ehlo()
     server.ehlo()
+    server.starttls(context=context)
     server.login(os.getenv('LOGIN_EMAIL'), os.getenv('PASSWORD_EMAIL'))
 
     fromaddr = os.getenv('LOGIN_EMAIL')
@@ -117,7 +120,7 @@ if __name__ == '__main__':
             parameters = "\'cidade\': {}, \'check-in\': {}-{}-{}, \'check-out\':{}-{}-{}, \'adultos\':{}, \'crianças\':{}".format(
                 city, checkin_monthday, checkin_month, checkin_year, checkout_monthday, checkout_month, checkin_year, group_adults, group_children)
 
-            cmd = "scrapy crawl Booking -a city={} -a group_adults={} -a group_children={} -a checkin_monthday={} -a checkin_month={} -a checkin_year={} -a checkout_monthday={} -a checkout_month={} -a checkout_year={} -o output_{}_{}.csv".format(
+            cmd = "scrapy crawl Booking -a city={} -a group_adults={} -a group_children={} -a checkin_monthday={} -a checkin_month={} -a checkin_year={} -a checkout_monthday={} -a checkout_month={} -a checkout_year={} -o output_booking_{}_{}.csv".format(
                 city, group_adults, group_children, checkin_monthday, checkin_month, checkin_year, checkout_monthday, checkout_month, checkout_year, str(i+1), datetime.now().strftime("%d%m%y%H%M"))
 
             process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
@@ -134,7 +137,7 @@ if __name__ == '__main__':
         send_mail(subject, body)
 
         process = subprocess.Popen(
-            'rm -rf *.csv', shell=True, stdout=subprocess.PIPE)
+            'mv *.csv backup/', shell=True, stdout=subprocess.PIPE)
         process.wait()
 
     else:
