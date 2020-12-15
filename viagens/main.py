@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from scrapy import cmdline
 import os
 from spreadsheets import SpreadSheets
@@ -67,7 +68,8 @@ def send_mail(subject, body):
     load_dotenv()
 #    server = smtplib.SMTP_SSL(os.getenv('SERVIDOR_EMAIL'), 465)
     context = ssl.create_default_context()
-    server = smtplib.SMTP(os.getenv('SERVIDOR_EMAIL'), 587)
+    server = smtplib.SMTP(os.getenv('SERVIDOR_EMAIL'),
+                          int(os.getenv('PORT_EMAIL')))
     server.ehlo()
     server.ehlo()
     server.starttls(context=context)
