@@ -66,7 +66,6 @@ def write_df(parameters, time_elapsed):
 
 def send_mail(subject, body):
     load_dotenv()
-#    server = smtplib.SMTP_SSL(os.getenv('SERVIDOR_EMAIL'), 465)
     context = ssl.create_default_context()
     server = smtplib.SMTP(os.getenv('SERVIDOR_EMAIL'),
                           int(os.getenv('PORT_EMAIL')))
@@ -124,6 +123,9 @@ if __name__ == '__main__':
 
             cmd = "scrapy crawl Booking -a city={} -a group_adults={} -a group_children={} -a checkin_monthday={} -a checkin_month={} -a checkin_year={} -a checkout_monthday={} -a checkout_month={} -a checkout_year={} -o output_booking_{}_{}.csv".format(
                 city, group_adults, group_children, checkin_monthday, checkin_month, checkin_year, checkout_monthday, checkout_month, checkout_year, str(i+1), datetime.now().strftime("%d%m%y%H%M"))
+
+            # cmd = "scrapy crawl BookingDB -a city={} -a group_adults={} -a group_children={} -a checkin_monthday={} -a checkin_month={} -a checkin_year={} -a checkout_monthday={} -a checkout_month={} -a checkout_year={} -o output_booking_{}_{}.csv".format(
+            #     city, group_adults, group_children, checkin_monthday, checkin_month, checkin_year, checkout_monthday, checkout_month, checkout_year, str(i+1), datetime.now().strftime("%d%m%y%H%M"))
 
             process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
             process.wait()
